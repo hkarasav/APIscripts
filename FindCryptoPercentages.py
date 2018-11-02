@@ -3,6 +3,15 @@ import urllib.request
 import urllib.parse
 import json
 import sys
+import colorama
+from colorama import Fore
+from colorama import Style
+from colorama import init
+
+init()   # For colorama
+# print(Fore.GREEN + "Hello World")
+# print(Style.RESET_ALL)
+
 
 '''
 0)Coinmarketcap will CHANGE their API by the end of the year??...
