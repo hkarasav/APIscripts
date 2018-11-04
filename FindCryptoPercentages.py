@@ -29,15 +29,22 @@ coin=""
 price=0
 coinId=""
 circSupply=0
+percentageOfCircSupply=0
 totalSupply=0
+percentageOfTotalSupply=0
 maxSupply=0
-
+percentageOfMaxSupply=0
 total_value=0
 
 global keys_to_sort
 keys_to_sort=["price","totalvalue","circsuppply","prccircsupply","totalsupply","prctotalsupply","maxsupply","prcmaxsupply"]
 
-# Coin name must be exactyl as it is in coinmarketcap page: https://coinmarketcap.com
+purchase_price_and_mark={}         # Receives user input about purchase price and coin marking
+marked_coins=[]                    # Holds the name of those coins that are marked
+unmarked_counter=0                 # Holds the number of coins not marked. Used only if all coins are not marked
+no_coins_purchase_price=0          # Holds the number of coins that have a purchase price. Used only if all coins are not marked
+
+# Coin name must be exactly as it is in coinmarketcap page: https://coinmarketcap.com
 coins_list = {
     'Ethereum': 50,
     'Bitcoin': 0.5,
@@ -60,12 +67,70 @@ def initialize(dictofcoins):
    for coin in dictofcoins:
       dictofcoins[coin]=[dictofcoins[coin]]
       dictofcoins[coin].extend(['price','totalvalue','circsuppply','prccircsupply','totalsupply','prctotalsupply','maxsupply','prcmaxsupply'])
-initialize(coins_list)
 
 def sort_based_on(dictionary,index):
    list_to_sort=sorted(dictionary.items(), key=lambda e: e[1][index])          # Sorted return a list of Tupples
    list_to_sort.reverse()                                                      # Keep it as tupple and reverse it so that greater numbers come at the top                                         
    return dict(list_to_sort)                                                   # Convert back to dictionary
+
+
+
+
+print("For each coin declare if you want to mark it with green color by writing \"mark\" comma the purchase price. The order is not important")
+print("You do not have to use either \"mark\" or give a purchase price")
+print("You can skip any coin configuration with the enter key")
+print("You can end the setup with \"end\"")
+for coin in coins_list:
+   print(coin,": ", end="")
+   purchase_price_and_mark[coin] = input("")
+   if "end" in purchase_price_and_mark[coin]:
+      del purchase_price_and_mark[coin]
+      break
+   templist=purchase_price_and_mark[coin].split(",")
+   templist=[value.lower() for value in templist]    # .lower() works since purchase price is considered a string here
+   if "" in templist:
+      print("\"\" in templist")
+      unmarked_counter = unmarked_counter + 1
+      no_coins_purchase_price = no_coins_purchase_price + 1
+      templist[0]=0
+      purchase_price_and_mark[coin] = templist
+      print(unmarked_counter,no_coins_purchase_price)
+      print(purchase_price_and_mark[coin])
+   elif "mark" in templist and len(templist) == 1:
+      print("\"mark\" in templist and len(templist)==1")
+      marked_coins.append(coin)
+      templist.remove("mark")
+      templist.append("0")
+      purchase_price_and_mark[coin] = templist
+      no_coins_purchase_price = no_coins_purchase_price + 1
+      print(marked_coins)
+      print(unmarked_counter,no_coins_purchase_price)
+      print(purchase_price_and_mark[coin])
+   elif "mark" in templist and len(templist) == 2:
+      print("\"mark\" in templist and len(templist)==2")
+      marked_coins.append(coin)
+      templist.remove("mark")
+      purchase_price_and_mark[coin] = templist
+      print(marked_coins)
+      print(unmarked_counter,no_coins_purchase_price)
+      print(purchase_price_and_mark[coin])
+   elif len(templist) == 1:
+      print("len(templist) == 1")
+      unmarked_counter = unmarked_counter + 1
+      purchase_price_and_mark[coin] = templist
+      print(unmarked_counter,no_coins_purchase_price)
+      print(purchase_price_and_mark[coin])
+
+print(marked_coins)
+print(purchase_price_and_mark)
+
+
+print("Are all the settings correct?")
+   
+
+
+   
+initialize(coins_list)
 
 # Ask user which is the key to sort
 for key in keys_to_sort:
@@ -136,7 +201,7 @@ for coin in coins_list:
 # "Name",["Coins","Price","Value","Circ supply","% Circ supply","Tot supply","% Tot supply","Max supply","% Max supply"]
 
 sorted_list=sort_based_on(coins_list,key_to_sort)
-
+print(Fore.GREEN + "Hello World")
 for coin in sorted_list:
     print("{:<21}| {:>8}| {:>9,.3f}| {:>8,}| {:>16,.0f}| {:>14.8%}| {:>17,.0f}| {:>14.8%}| {:>17,.0f}| {:<14.8%}".format(coin,sorted_list[coin][0],sorted_list[coin][1],sorted_list[coin][2],sorted_list[coin][3],sorted_list[coin][4],sorted_list[coin][5],sorted_list[coin][6],sorted_list[coin][7],sorted_list[coin][8])) 
     total_value=total_value+sorted_list[coin][2]    
