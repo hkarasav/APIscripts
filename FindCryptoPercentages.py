@@ -15,16 +15,16 @@ init()   # For colorama
 
 '''
 0)Coinmarketcap will CHANGE their API by the end of the year??...
-1)Καλό feature θα ήταν να δίνεις και τιμή που το αγόρασες (μέσο όρο.. ενδεικτικά αν δε ξερεις) και να σου λέει πόσο % Πάνω είσαι...κάτι τέτοιο. 
+1)WIP...Καλό feature θα ήταν να δίνεις και τιμή που το αγόρασες (μέσο όρο.. ενδεικτικά αν δε ξερεις) και να σου λέει πόσο % Πάνω είσαι...κάτι τέτοιο. 
 2)Na deixnei metavoli timis % gia 24h i 7days....uparxei idi sto json apo coinmarketcap
-3)Another feature would be to ask for important coins and color them
+3)DONE!! Another feature would be to ask for important coins and color them
 4)Another feature would be to ask a base coin and add a separator line above/below the base coin
 '''
 
 
 null = 0
 
-currency=""
+currency="EUR"
 coin=""
 price=0
 coinId=""
@@ -45,7 +45,7 @@ unmarked_counter=0                 # Holds the number of coins not marked. Used 
 no_coins_purchase_price=0          # Holds the number of coins that have a purchase price. Used only if all coins are not marked
 
 # Coin name must be exactly as it is in coinmarketcap page: https://coinmarketcap.com
-coins_list = {
+coins_dict = {
     'Ethereum': 50,
     'Bitcoin': 0.5,
     'Aeternity': 1800,
@@ -70,17 +70,22 @@ def initialize(dictofcoins):
 
 def sort_based_on(dictionary,index):
    list_to_sort=sorted(dictionary.items(), key=lambda e: e[1][index])          # Sorted return a list of Tupples
-   list_to_sort.reverse()                                                      # Keep it as tupple and reverse it so that greater numbers come at the top                                         
+   list_to_sort.reverse()                                                      # Keep it as tupple and reverse it so that greater numbers come at the top       
    return dict(list_to_sort)                                                   # Convert back to dictionary
 
+def get_coinmarketcap_ID(coin):
+   for dictentry in range(0,len(coin_ids['data'])+1):
+      if coin_ids['data'][dictentry]['name'] == coin:
+         return coin_ids['data'][dictentry]['id']
 
-
+def handle_mark_and_purchase_price(dictionary_with_coins):
+   return None
 
 print("For each coin declare if you want to mark it with green color by writing \"mark\" comma the purchase price. The order is not important")
 print("You do not have to use either \"mark\" or give a purchase price")
 print("You can skip any coin configuration with the enter key")
 print("You can end the setup with \"end\"")
-for coin in coins_list:
+for coin in coins_dict:
    print(coin,": ", end="")
    purchase_price_and_mark[coin] = input("")
    if "end" in purchase_price_and_mark[coin]:
@@ -130,7 +135,7 @@ print("Are all the settings correct?")
 
 
    
-initialize(coins_list)
+initialize(coins_dict)
 
 # Ask user which is the key to sort
 for key in keys_to_sort:
@@ -149,16 +154,14 @@ print("\n"*1)
 request="https://api.coinmarketcap.com/v2/listings/"
 coin_ids=json.loads(urllib.request.urlopen(request).read())                    # Convert (.loads) from Python string when read, to dictionary
 
-def getcoinmarketcapID(coin):
-   for dictentry in range(0,len(coin_ids['data'])+1):
-      if coin_ids['data'][dictentry]['name'] == coin:
-         return coin_ids['data'][dictentry]['id']
+print(Fore.CYAN + "Currency: " + currency)
+print(Style.RESET_ALL)
 
-print("{:<21} {:^8}  {:^8}  {:^12} {:^16} {:^16} {:^16} {:^16} {:^16} {:^16}".format("Name","Coins","Price","Value(EUR)","Circ supply","% Circ supply","Tot supply","% Tot supply","Max supply","% Max supply"))
-print("-"*155)
+print("{:<21}| {:^7}| {:^9}| {:^8}| {:^14}| {:^11}| {:^15}| {:^11}| {:^15}| {:^11}".format("Name","Coins","Price","Value","Circ supply","%Cir supply","Tot supply","%Tot supply","Max supply","%Max supply"))
+print("-"*145)
 
-for coin in coins_list:
-   coinId=getcoinmarketcapID(coin)
+for coin in coins_dict:
+   coinId=get_coinmarketcap_ID(coin)
    
    CoinDataCoinmarketcap="https://api.coinmarketcap.com/v2/ticker/"+str(coinId)+"/?convert=EUR"
    # Turn the string returned from urllib.request.urlopen to python dictionary with .loads method
@@ -170,41 +173,44 @@ for coin in coins_list:
 
    price=format(coinData['data']['quotes']['EUR']['price'],'.3f')
 
-   coins_list[coin][0]                                                                # "Coin"
-   coins_list[coin][1]=float(price)                                                   # "Price"
-   coins_list[coin][2]=int(float(coins_list[coin][0])*float(price))                   # "Value"
+   coins_dict[coin][0]                                                                # "Coin"
+   coins_dict[coin][1]=float(price)                                                   # "Price"
+   coins_dict[coin][2]=int(float(coins_dict[coin][0])*float(price))                   # "Value"
    
    if circSupply != None:
-      coins_list[coin][3]=float(circSupply)                                           # "Circ supply"
-      percentageOfCircSupply=coins_list[coin][0]/circSupply
-      coins_list[coin][4]=float(format(percentageOfCircSupply, '.10f'))               # "% Circ supply"
+      coins_dict[coin][3]=float(circSupply)                                           # "Circ supply"
+      percentageOfCircSupply=coins_dict[coin][0]/circSupply
+      coins_dict[coin][4]=float(format(percentageOfCircSupply, '.10f'))               # "% Circ supply"
    else:
-      coins_list[coin][3] = 0
-      coins_list[coin][4] = 0
+      coins_dict[coin][3] = 0
+      coins_dict[coin][4] = 0
   
    if totalSupply != None:
-      coins_list[coin][5]=float(totalSupply)                                          # "Tot supply"
-      percentageOfTotalSupply=coins_list[coin][0]/totalSupply
-      coins_list[coin][6]=float(format(percentageOfTotalSupply, '.10f'))              # "% Tot supply"
+      coins_dict[coin][5]=float(totalSupply)                                          # "Tot supply"
+      percentageOfTotalSupply=coins_dict[coin][0]/totalSupply
+      coins_dict[coin][6]=float(format(percentageOfTotalSupply, '.10f'))              # "% Tot supply"
    else:
-      coins_list[coin][5] = 0
-      coins_list[coin][6] = 0
+      coins_dict[coin][5] = 0
+      coins_dict[coin][6] = 0
 
    if maxSupply != None:
-      coins_list[coin][7]=float(maxSupply)                                            # "Max supply"
-      percentageOfMaxSupply=coins_list[coin][0]/maxSupply
-      coins_list[coin][8]=float(format(percentageOfMaxSupply, '.10f'))                # "% Max supply"
+      coins_dict[coin][7]=float(maxSupply)                                            # "Max supply"
+      percentageOfMaxSupply=coins_dict[coin][0]/maxSupply
+      coins_dict[coin][8]=float(format(percentageOfMaxSupply, '.10f'))                # "% Max supply"
    else:
-      coins_list[coin][7] = 0
-      coins_list[coin][8] = 0
+      coins_dict[coin][7] = 0
+      coins_dict[coin][8] = 0
 
 # "Name",["Coins","Price","Value","Circ supply","% Circ supply","Tot supply","% Tot supply","Max supply","% Max supply"]
 
-sorted_list=sort_based_on(coins_list,key_to_sort)
-print(Fore.GREEN + "Hello World")
+sorted_list=sort_based_on(coins_dict,key_to_sort)
 for coin in sorted_list:
-    print("{:<21}| {:>8}| {:>9,.3f}| {:>8,}| {:>16,.0f}| {:>14.8%}| {:>17,.0f}| {:>14.8%}| {:>17,.0f}| {:<14.8%}".format(coin,sorted_list[coin][0],sorted_list[coin][1],sorted_list[coin][2],sorted_list[coin][3],sorted_list[coin][4],sorted_list[coin][5],sorted_list[coin][6],sorted_list[coin][7],sorted_list[coin][8])) 
+    if coin in marked_coins:
+       print(Fore.GREEN + "{:<21}| {:>7}| {:>9,.3f}| {:>8,}| {:>14,.0f}| {:>11.8%}| {:>15,.0f}| {:>11.8%}| {:>15,.0f}| {:>11.8%}".format(coin,sorted_list[coin][0],sorted_list[coin][1],sorted_list[coin][2],sorted_list[coin][3],sorted_list[coin][4],sorted_list[coin][5],sorted_list[coin][6],sorted_list[coin][7],sorted_list[coin][8]))
+       print(Style.RESET_ALL)
+    else:
+        print("{:<21}| {:>7}| {:>9,.3f}| {:>8,}| {:>14,.0f}| {:>11.8%}| {:>15,.0f}| {:>11.8%}| {:>15,.0f}| {:>11.8%}".format(coin,sorted_list[coin][0],sorted_list[coin][1],sorted_list[coin][2],sorted_list[coin][3],sorted_list[coin][4],sorted_list[coin][5],sorted_list[coin][6],sorted_list[coin][7],sorted_list[coin][8]))
     total_value=total_value+sorted_list[coin][2]    
 
-print("-"*155)
+print("-"*145)
 print("Total value: {:>39} euros".format(total_value))
