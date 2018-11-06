@@ -9,7 +9,7 @@ from colorama import Style
 from colorama import init
 
 init()   # For colorama
-# print(Fore.GREEN + "Hello World")
+# print(Fore.MAGENTA + "Hello World")
 # print(Style.RESET_ALL)
 
 
@@ -36,6 +36,22 @@ percentageOfTotalSupply=0
 maxSupply=0
 percentageOfMaxSupply=0
 #total_value=0
+
+# Used for clearer understanding of indeces in lists
+CONST_COINS_NUMBER=0
+CONST_PRICE       =1
+CONST_PRC_24H_CHANGE =2
+CONST_PURCH_PRICE =3
+CONST_PRC_PURCH_PRICE=4
+CONST_TOTAL_VALUE =5
+CONST_CIRC_SUPPLY =6
+CONST_PRC_CIRC_SUPPLY=7
+CONST_TOT_SUPPLY  =8
+CONST_PRC_TOT_SUPPLY =9
+CONST_MAX_SUPPLY  =10
+CONST_PRC_MAX_SUPPLY =11
+
+
 
 keys_to_sort=["price","prc24h","purchaseprice","prcpurchase","totalvalue","circsuppply","prccircsupply","totalsupply","prctotalsupply","maxsupply","prcmaxsupply"]
 attributes_to_print=[]
@@ -88,9 +104,9 @@ def get_coinmarketcap_ID(coin):
 
 def calculate_percentage_change(coin_purchase_price,coin_current_price):
    if coin_purchase_price != 0:
-      return (coin_current_price-coin_purchase_price)/coin_purchase_price*100
+      return int((coin_current_price-coin_purchase_price)/coin_purchase_price) #*100
    else:
-      return 0
+      return int(0)
 
 def print_attributes(attr,list_of_coins):
     global total_value
@@ -99,36 +115,36 @@ def print_attributes(attr,list_of_coins):
     print(Style.RESET_ALL)
     print("{:<21}|".format("Name"), end="")
     for i in attr:
-       if i == 0: print("{:^7}|".format("Coins"), end="")
-       if i == 1: print("{:^9}|".format("Price"), end="")
-       if i == 2: print("{:^6}|".format("%24h"), end="")
-       if i == 3: print("{:^8}|".format("PPrice"), end="")
-       if i == 4: print("{:^9}|".format("%PPrice"), end="")
-       if i == 5: print("{:^4}|".format("Value"), end="")
-       if i == 6: print("{:^14}|".format("Circ supply"), end="")
-       if i == 7: print("{:^11}|".format("%Cir supply"), end="")
-       if i == 8: print("{:^15}|".format("Tot supply"), end="")
-       if i == 9: print("{:^11}|".format("%Tot supply"), end="")
-       if i == 10: print("{:^15}|".format("Max supply"), end="")
-       if i == 11: print("{:^11}".format("%Max supply"))
-    print("\n","-"*100)
+       if i == CONST_COINS_NUMBER   : print("{:^7}|".format("Coins"), end="")
+       if i == CONST_PRICE          : print("{:^9}|".format("Price"), end="")
+       if i == CONST_PRC_24H_CHANGE : print("{:^6}|".format("%24h"), end="")
+       if i == CONST_PURCH_PRICE    : print("{:^8}|".format("PPrice"), end="")
+       if i == CONST_PRC_PURCH_PRICE: print("{:^9}|".format("%PPrice"), end="")
+       if i == CONST_TOTAL_VALUE    : print("{:^8}|".format("Value"), end="")
+       if i == CONST_CIRC_SUPPLY    : print("{:^15}|".format("Circ supply"), end="")
+       if i == CONST_PRC_CIRC_SUPPLY: print("{:^11}|".format("%Cir supply"), end="")
+       if i == CONST_TOT_SUPPLY     : print("{:^15}|".format("Tot supply"), end="")
+       if i == CONST_PRC_TOT_SUPPLY : print("{:^11}|".format("%Tot supply"), end="")
+       if i == CONST_MAX_SUPPLY     : print("{:^15}|".format("Max supply"), end="")
+       if i == CONST_PRC_MAX_SUPPLY : print("{:^11}".format("%Max supply"))
+    print("\n"+"-"*145)
     for coin in list_of_coins:
-       if coin in marked_coins: print(Fore.GREEN)
-       if coin == base_coin: print(Fore.YELLOW)
+       if coin in marked_coins: print(Fore.MAGENTA, end="")
+       if coin == base_coin: print(Fore.YELLOW, end="")
        print("{:<21}|".format(coin), end="")
        for i in attr:
-          if i == 0: print("{:>7}|".format(sorted_list[coin][0]), end="")
-          if i == 1: print("{:>9,.3f}|".format(sorted_list[coin][1]), end="")
-          if i == 2: print("{:>6.1%}|".format(sorted_list[coin][2]), end="")
-          if i == 3: print("{:>8,}|".format(sorted_list[coin][3]), end="")
-          if i == 4: print("{:>9,%}|".format(int(sorted_list[coin][4])), end="")
-          if i == 5: print("{:>4,}|".format(sorted_list[coin][5]), end="")
-          if i == 6: print("{:>14,.0f}|".format(sorted_list[coin][6]), end="")
-          if i == 7: print("{:>11.8%}|".format(sorted_list[coin][7]), end="")
-          if i == 8: print("{:>15,.0f}|".format(sorted_list[coin][8]), end="")
-          if i == 9: print("{:>11.8%}|".format(sorted_list[coin][9]), end="")
-          if i == 10: print("{:>15,.0f}|".format(sorted_list[coin][10]), end="")
-          if i == 11: print("{:>11.8%}".format(sorted_list[coin][11]))
+          if i == CONST_COINS_NUMBER   : print("{:>7}|".format(sorted_list[coin][CONST_COINS_NUMBER]), end="")
+          if i == CONST_PRICE          : print("{:>9,.3f}|".format(sorted_list[coin][CONST_PRICE]), end="")
+          if i == CONST_PRC_24H_CHANGE : print("{:>6.1%}|".format(sorted_list[coin][CONST_PRC_24H_CHANGE]), end="")
+          if i == CONST_PURCH_PRICE    : print("{:>8,}|".format(sorted_list[coin][CONST_PURCH_PRICE]), end="")
+          if i == CONST_PRC_PURCH_PRICE: print("{:>9,.0%}|".format(int(sorted_list[coin][CONST_PRC_PURCH_PRICE])), end="")
+          if i == CONST_TOTAL_VALUE    : print("{:>8,}|".format(sorted_list[coin][CONST_TOTAL_VALUE]), end="")
+          if i == CONST_CIRC_SUPPLY    : print("{:>15,.0f}|".format(sorted_list[coin][CONST_CIRC_SUPPLY]), end="")
+          if i == CONST_PRC_CIRC_SUPPLY: print("{:>11.8%}|".format(sorted_list[coin][CONST_PRC_CIRC_SUPPLY]), end="")
+          if i == CONST_TOT_SUPPLY     : print("{:>15,.0f}|".format(sorted_list[coin][CONST_TOT_SUPPLY]), end="")
+          if i == CONST_PRC_TOT_SUPPLY : print("{:>11.8%}|".format(sorted_list[coin][CONST_PRC_TOT_SUPPLY]), end="")
+          if i == CONST_MAX_SUPPLY     : print("{:>15,.0f}|".format(sorted_list[coin][CONST_MAX_SUPPLY]), end="")
+          if i == CONST_PRC_MAX_SUPPLY : print("{:>11.8%}".format(sorted_list[coin][CONST_PRC_MAX_SUPPLY]))
        print(Style.RESET_ALL)
        total_value=total_value+sorted_list[coin][5]
 
@@ -266,37 +282,36 @@ for coin in coins_dict:
    price_change_24h=float(coinData['data']['quotes']['EUR']['percent_change_24h'])
    initial_purchased_price=format(float(purchase_price[coin][0]),'.3f')
 
-   coins_dict[coin][0]                                                                       # "Coins"
-   coins_dict[coin][1]=float(price)                                                          # "Price"
-   coins_dict[coin][2]=float(price_change_24h)/100                                           # "Prc24h"
-   coins_dict[coin][3]=float(initial_purchased_price)                                        # "purchaseprice"
-   coins_dict[coin][4]=calculate_percentage_change(float(coins_dict[coin][3]),float(coins_dict[coin][1]))  # "% purchase"
-   coins_dict[coin][5]=int(float(coins_dict[coin][0])*float(price))                          # "Value"
+   coins_dict[coin][CONST_PRICE]          =float(price)                                                          # "Price"
+   coins_dict[coin][CONST_PRC_24H_CHANGE] =float(price_change_24h)/100                                           # "Prc24h"
+   coins_dict[coin][CONST_PURCH_PRICE]    =float(initial_purchased_price)                                        # "purchaseprice"
+   coins_dict[coin][CONST_PRC_PURCH_PRICE]=calculate_percentage_change(float(coins_dict[coin][CONST_PURCH_PRICE]),float(coins_dict[coin][CONST_PRICE]))  # "% purchase"
+   coins_dict[coin][CONST_TOTAL_VALUE]    =int(float(coins_dict[coin][0])*float(price))                          # "Value"
 
 
    if circSupply != None:
-      coins_dict[coin][6]=float(circSupply)                                           # "Circ supply"
-      percentageOfCircSupply=coins_dict[coin][0]/circSupply
-      coins_dict[coin][7]=float(format(percentageOfCircSupply, '.10f'))               # "% Circ supply"
+      coins_dict[coin][CONST_CIRC_SUPPLY]    =float(circSupply)                                           # "Circ supply"
+      percentageOfCircSupply                 =coins_dict[coin][CONST_COINS_NUMBER]/circSupply
+      coins_dict[coin][CONST_PRC_CIRC_SUPPLY]=float(format(percentageOfCircSupply, '.10f'))               # "% Circ supply"
    else:
-      coins_dict[coin][6] = 0
-      coins_dict[coin][7] = 0
+      coins_dict[coin][CONST_CIRC_SUPPLY]    =0
+      coins_dict[coin][CONST_PRC_CIRC_SUPPLY]=0
   
    if totalSupply != None:
-      coins_dict[coin][8]=float(totalSupply)                                          # "Tot supply"
-      percentageOfTotalSupply=coins_dict[coin][0]/totalSupply
-      coins_dict[coin][9]=float(format(percentageOfTotalSupply, '.10f'))              # "% Tot supply"
+      coins_dict[coin][CONST_TOT_SUPPLY]    =float(totalSupply)                                          # "Tot supply"
+      percentageOfTotalSupply               =coins_dict[coin][0]/totalSupply
+      coins_dict[coin][CONST_PRC_TOT_SUPPLY]=float(format(percentageOfTotalSupply, '.10f'))              # "% Tot supply"
    else:
-      coins_dict[coin][8] = 0
-      coins_dict[coin][9] = 0
+      coins_dict[coin][CONST_TOT_SUPPLY]    =0
+      coins_dict[coin][CONST_PRC_TOT_SUPPLY]=0
 
    if maxSupply != None:
-      coins_dict[coin][10]=float(maxSupply)                                            # "Max supply"
-      percentageOfMaxSupply=coins_dict[coin][0]/maxSupply
-      coins_dict[coin][11]=float(format(percentageOfMaxSupply, '.10f'))                # "% Max supply"
+      coins_dict[coin][CONST_MAX_SUPPLY]    =float(maxSupply)                                            # "Max supply"
+      percentageOfMaxSupply                 =coins_dict[coin][0]/maxSupply
+      coins_dict[coin][CONST_PRC_MAX_SUPPLY]=float(format(percentageOfMaxSupply, '.10f'))                # "% Max supply"
    else:
-      coins_dict[coin][10] = 0
-      coins_dict[coin][11] = 0
+      coins_dict[coin][CONST_MAX_SUPPLY]    =0
+      coins_dict[coin][CONST_PRC_MAX_SUPPLY]=0
 
 myconsoleprint(coins_dict)
 sorted_list=sort_based_on(coins_dict,key_to_sort)
@@ -307,5 +322,5 @@ myconsoleprint(sorted_list)
 
 print_attributes(attributes_to_print,sorted_list)
 
-print("-"*100)
+print("-"*145)
 print("Total value: {:>39} euros".format(total_value))
