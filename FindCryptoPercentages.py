@@ -15,16 +15,17 @@ init()   # For colorama
 
 '''
 0)Coinmarketcap will CHANGE their API by the end of the year??...
-1)WIP...Καλό feature θα ήταν να δίνεις και τιμή που το αγόρασες (μέσο όρο.. ενδεικτικά αν δε ξερεις) και να σου λέει πόσο % Πάνω είσαι...κάτι τέτοιο. 
-2)WIP...Na deixnei metavoli timis % gia 24h i 7days....uparxei idi sto json apo coinmarketcap
+1)DONE!! Καλό feature θα ήταν να δίνεις και τιμή που το αγόρασες (μέσο όρο.. ενδεικτικά αν δε ξερεις) και να σου λέει πόσο % Πάνω είσαι...κάτι τέτοιο. 
+2)DONE!! Na deixnei metavoli timis % gia 24h i 7days....uparxei idi sto json apo coinmarketcap
 3)DONE!! Another feature would be to ask for important coins and color them
 4)DONE!! Another feature would be to ask a base coin and add a separator line above/below the base coin
+5) Number of coins is NOT PRINTED CHECK IT!!!!!
 '''
 
 
 null = 0
 
-debug=1
+debug=0
 currency="EUR"
 coin=""
 price=0
@@ -35,7 +36,6 @@ totalSupply=0
 percentageOfTotalSupply=0
 maxSupply=0
 percentageOfMaxSupply=0
-#total_value=0
 
 # Used for clearer understanding of indeces in lists
 CONST_COINS_NUMBER   =0
@@ -60,21 +60,21 @@ marked_coins=[]    # A list of the coins to be marked with Magenta
 
 # Coin name must be exactly as it is in coinmarketcap page: https://coinmarketcap.com
 coins_dict = {
-    'Ethereum': [50,0.2],
-    'Bitcoin': [0.5,0],
-    'Aeternity': [1800,0.3],
-    'Stellar': [8800,0.15],
-    'PIVX': [1450,0.4],
+    'Ethereum': [49,0],
+    'Bitcoin': [0.48,0],
+    'Aeternity': [1800,0],
+    'Stellar': [8800,0],
+    'PIVX': [1460,0],
     'EOS': [249.8,0],
-    'Dash': [7.5,90],
-    'Lisk': [390,0.6],
-    'Tezos': [600,0.6],
-    'Basic Attention Token': [2592.1,0.25],
-    'Waves': [211.3,0.4],
+    'Dash': [7.5,0],
+    'Lisk': [400,0],
+    'Tezos': [600,0],
+    'Basic Attention Token': [2592,0],
+    'Waves': [211,0],
     'Ethereum Classic': [43.8,0],
-    'SONM': [6300,0],
     'Particl': [155,0],
-    'TaaS': [400,1],
+    'NEO': [20,0],
+    'VeChain': [21990,0],
     }
 
 def myconsoleprint(text1,text2="",text3=""):
@@ -83,14 +83,13 @@ def myconsoleprint(text1,text2="",text3=""):
 
 def initialize(dictofcoins):
    for coin in dictofcoins:
-#      dictofcoins[coin]=[dictofcoins[coin]]
       dictofcoins[coin].extend(['price','prcpurchase','prc24h','totalvalue','circsuppply','prccircsupply','totalsupply','prctotalsupply','maxsupply','prcmaxsupply'])
    myconsoleprint(dictofcoins)
 
 def sort_based_on(dictionary,index):
-   list_to_sort=sorted(dictionary.items(), key=lambda e: e[1][index])          # Sorted return a list of Tupples
-   list_to_sort.reverse()                                                      # Keep it as tupple and reverse it so that greater numbers come at the top       
-   return dict(list_to_sort)                                                   # Convert back to dictionary
+   list_to_sort=sorted(dictionary.items(), key=lambda e: e[1][index])    # Sorted return a list of Tupples
+   list_to_sort.reverse()                                                # Keep it as list and reverse it so that greater numbers come at the top       
+   return dict(list_to_sort)                                             # Convert back to dictionary
 
 def get_coinmarketcap_ID(coin):
    for dictentry in range(0,len(coin_ids['data'])+1):
@@ -99,7 +98,7 @@ def get_coinmarketcap_ID(coin):
 
 def calculate_percentage_change(coin_purchase_price,coin_current_price):
    if coin_purchase_price != 0:
-      return int((coin_current_price-coin_purchase_price)/coin_purchase_price) #*100
+      return int((coin_current_price-coin_purchase_price)/coin_purchase_price)
    else:
       return int(0)
 
@@ -208,11 +207,8 @@ print("\n"*1)
 print("Reading...")
 print("\n"*1)
 
-# https://api.coinmarketcap.com/v2/ticker/?convert=EUR&start=1&sort=rank&limit=100
-# https://api.coinmarketcap.com/v2/global/
-
 request="https://api.coinmarketcap.com/v2/listings/"
-coin_ids=json.loads(urllib.request.urlopen(request).read())                    # Convert (.loads) from Python string when read, to dictionary
+coin_ids=json.loads(urllib.request.urlopen(request).read())      # Convert (.loads) from Python string when read, to dictionary
 
 for coin in coins_dict:
    coinId=get_coinmarketcap_ID(coin)
@@ -229,40 +225,40 @@ for coin in coins_dict:
    price_change_24h=float(coinData['data']['quotes']['EUR']['percent_change_24h'])
    initial_purchased_price=format(float(coins_dict[coin][CONST_PURCH_PRICE]),'.3f')
 
-   coins_dict[coin][CONST_PRICE]          =float(price)                                                          # "Price"
-   coins_dict[coin][CONST_PRC_24H_CHANGE] =float(price_change_24h)/100                                           # "Prc24h"
-   coins_dict[coin][CONST_PURCH_PRICE]    =float(initial_purchased_price)                                        # "purchaseprice"
-   coins_dict[coin][CONST_PRC_PURCH_PRICE]=calculate_percentage_change(float(coins_dict[coin][CONST_PURCH_PRICE]),float(coins_dict[coin][CONST_PRICE]))  # "% purchase"
-   coins_dict[coin][CONST_TOTAL_VALUE]    =int(float(coins_dict[coin][0])*float(price))                          # "Value"
+   coins_dict[coin][CONST_PRICE]          =float(price)
+   coins_dict[coin][CONST_PRC_24H_CHANGE] =float(price_change_24h)/100
+   coins_dict[coin][CONST_PURCH_PRICE]    =float(initial_purchased_price)
+   coins_dict[coin][CONST_PRC_PURCH_PRICE]=calculate_percentage_change(float(coins_dict[coin][CONST_PURCH_PRICE]),float(coins_dict[coin][CONST_PRICE]))
+   coins_dict[coin][CONST_TOTAL_VALUE]    =int(float(coins_dict[coin][0])*float(price))
 
 
    if circSupply != None:
-      coins_dict[coin][CONST_CIRC_SUPPLY]    =float(circSupply)                                           # "Circ supply"
+      coins_dict[coin][CONST_CIRC_SUPPLY]    =float(circSupply)
       percentageOfCircSupply                 =coins_dict[coin][CONST_COINS_NUMBER]/circSupply
-      coins_dict[coin][CONST_PRC_CIRC_SUPPLY]=float(format(percentageOfCircSupply, '.10f'))               # "% Circ supply"
+      coins_dict[coin][CONST_PRC_CIRC_SUPPLY]=float(format(percentageOfCircSupply, '.10f'))
    else:
       coins_dict[coin][CONST_CIRC_SUPPLY]    =0
       coins_dict[coin][CONST_PRC_CIRC_SUPPLY]=0
   
    if totalSupply != None:
-      coins_dict[coin][CONST_TOT_SUPPLY]    =float(totalSupply)                                          # "Tot supply"
+      coins_dict[coin][CONST_TOT_SUPPLY]    =float(totalSupply)
       percentageOfTotalSupply               =coins_dict[coin][0]/totalSupply
-      coins_dict[coin][CONST_PRC_TOT_SUPPLY]=float(format(percentageOfTotalSupply, '.10f'))              # "% Tot supply"
+      coins_dict[coin][CONST_PRC_TOT_SUPPLY]=float(format(percentageOfTotalSupply, '.10f'))
    else:
       coins_dict[coin][CONST_TOT_SUPPLY]    =0
       coins_dict[coin][CONST_PRC_TOT_SUPPLY]=0
 
    if maxSupply != None:
-      coins_dict[coin][CONST_MAX_SUPPLY]    =float(maxSupply)                                            # "Max supply"
+      coins_dict[coin][CONST_MAX_SUPPLY]    =float(maxSupply)
       percentageOfMaxSupply                 =coins_dict[coin][0]/maxSupply
-      coins_dict[coin][CONST_PRC_MAX_SUPPLY]=float(format(percentageOfMaxSupply, '.10f'))                # "% Max supply"
+      coins_dict[coin][CONST_PRC_MAX_SUPPLY]=float(format(percentageOfMaxSupply, '.10f'))
    else:
       coins_dict[coin][CONST_MAX_SUPPLY]    =0
       coins_dict[coin][CONST_PRC_MAX_SUPPLY]=0
 
-# myconsoleprint(coins_dict)
+myconsoleprint("coins_dict: ",coins_dict,"\n")
 sorted_list=sort_based_on(coins_dict,key_to_sort)
-# myconsoleprint(sorted_list)
+myconsoleprint("sorted_list: ",sorted_list,"\n")
 print_attributes(attributes_to_print,sorted_list)
 
 print("-"*145)
