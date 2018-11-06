@@ -19,7 +19,6 @@ init()   # For colorama
 2)DONE!! Na deixnei metavoli timis % gia 24h i 7days....uparxei idi sto json apo coinmarketcap
 3)DONE!! Another feature would be to ask for important coins and color them
 4)DONE!! Another feature would be to ask a base coin and add a separator line above/below the base coin
-5) Number of coins is NOT PRINTED CHECK IT!!!!!
 '''
 
 
@@ -52,8 +51,7 @@ CONST_MAX_SUPPLY     =10
 CONST_PRC_MAX_SUPPLY =11
 
 
-
-keys_to_sort=["purchaseprice","price","prcpurchase","prc24h","totalvalue","circsuppply","prccircsupply","totalsupply","prctotalsupply","maxsupply","prcmaxsupply"]
+keys_to_sort=["Number_of_coins","Purchase_price","Current_Price","Prc_purchase","Prc24h","Total_value","Circ_suppply","Prc_circ_supply","Total_supply","Prc_total_supply","Max_supply","Prc_maxsupply"]
 attributes_to_print=[]    # A list of the attributes of each coin to be printed so that the report fits in the console
 
 marked_coins=[]    # A list of the coins to be marked with Magenta
@@ -182,15 +180,14 @@ def get_user_input(list_of_keys_to_sort):
 
    print("-"*25)
    key_to_sort = input("Please choose the key to use for descending sorting: ")   # This returns string in Python 3
-   key_to_sort = int(key_to_sort)                                                 # This is the index of the key in the list "keys_to_sort"
+   key_to_sort = int(key_to_sort)-1                                               # This is the index of the key in the list "keys_to_sort"
 
    attributes_to_print = input("Enter attributes to print. Example \"1,5,8\": ")
    attributes_to_print = attributes_to_print.split(",")
    attributes_to_print = set(attributes_to_print)        # Unordered list with unique elements
    attributes_to_print = list(attributes_to_print)
+   attributes_to_print[:] = [ int(attribute) - 1 for attribute in attributes_to_print]
    attributes_to_print.sort()
-   for i in range(0,len(attributes_to_print)):
-         attributes_to_print[i]=int(attributes_to_print[i])
    myconsoleprint(attributes_to_print)
 
 
