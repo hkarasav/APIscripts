@@ -24,7 +24,7 @@ init()   # For colorama
 
 null = 0
 
-debug=0
+debug=1
 currency="EUR"
 coin=""
 price=0
@@ -35,6 +35,9 @@ totalSupply=0
 percentageOfTotalSupply=0
 maxSupply=0
 percentageOfMaxSupply=0
+
+base_coin=""
+base_is_set=0
 
 # Used for clearer understanding of indeces in lists
 CONST_COINS_NUMBER   =0
@@ -141,36 +144,51 @@ def print_attributes(attr,list_of_coins):
        total_value=total_value+sorted_list[coin][5]
 
 def handle_base_and_mark(dictionary_with_coins):
-   global base_coin
-   base_coin=""
-   base_is_set=0
-
-   for coin in dictionary_with_coins:
-      print(coin,": ", end="")
-      action = input("")
-      if action=="end":
-         myconsoleprint("action is \"end\"")
-         myconsoleprint(marked_coins)
-         break
-      if action=="":
-         myconsoleprint("action is \"\"")
-         myconsoleprint(marked_coins)
-      elif action=="mark":
-         myconsoleprint("action is \"mark\"")
-         marked_coins.append(coin)
-         myconsoleprint(marked_coins)
-      elif action=="base":
-         myconsoleprint("action is \"base\"")
-         if base_is_set==1:
-             print("Error: You can only have one base coin")
+    for coin in dictionary_with_coins:
+       counter=0
+       for i in range (1,4):
+          result=validate_user_input(input(coin+": ").lower(),coin,i)
+          myconsoleprint(result)
+          print("i: ", i)
+          if result == "end" or result == "continue" or result == "mark":
              break
-         base_coin=coin
-         base_is_set=1
-         myconsoleprint("Base coin: ", base_coin)
-         myconsoleprint(marked_coins)
+          if i == 3:
+             print("Too many failed attempts (3/3\)")
+             sys.exit()
 
-   myconsoleprint(marked_coins)
-   check=input("Are all the settings correct?")
+       if result == "end":
+           break
+
+def validate_user_input(input,coin,iterator):
+   global base_coin
+   global base_is_set
+
+   if input=="end":
+      myconsoleprint("action is \"end\"")
+      myconsoleprint(marked_coins)
+      return "end"
+   if input=="":
+      myconsoleprint("action is \"\"")
+      myconsoleprint(marked_coins)
+      return "continue"
+   elif input=="mark":
+      myconsoleprint("action is \"mark\"")
+      marked_coins.append(coin)
+      myconsoleprint(marked_coins)
+      return "continue"
+   elif input=="base":
+      myconsoleprint("action is \"base\"")
+      if base_is_set==1:
+          print("Error: You can only have one base coin which now is:"+base_coin+". Attempt: ({}/3)".format(iterator))
+          return "error"
+      base_coin=coin
+      base_is_set=1
+      myconsoleprint("Base coin: ", base_coin)
+      myconsoleprint(marked_coins)
+      return "continue"
+   else:
+      print("Erroneous input. Please try again ({}/3)".format(iterator))
+      return "error"
 
 def get_user_input(list_of_keys_to_sort):
    global key_to_sort
