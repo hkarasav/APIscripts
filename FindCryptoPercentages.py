@@ -149,7 +149,7 @@ def handle_base_and_mark(dictionary_with_coins):
        for i in range (1,4):
           result=validate_user_input(input(coin+": ").lower(),coin,i)
           myconsoleprint(result)
-          print("i: ", i)
+          myconsoleprint("i: ", i)
           if result == "end" or result == "continue" or result == "mark":
              break
           if i == 3:
@@ -278,3 +278,14 @@ print_attributes(attributes_to_print,sorted_list)
 
 print("-"*145)
 print("Total value: {:>39} euros".format(total_value))
+
+
+'''
+def main():
+    calls_defs_as_needed()
+    m = a()
+    ...
+
+if __name__ == "__main__":
+    main()
+'''
