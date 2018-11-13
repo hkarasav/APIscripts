@@ -14,17 +14,13 @@ init()   # For colorama
 
 
 '''
-0)Coinmarketcap will CHANGE their API by the end of the year??...
-1)DONE!! Καλό feature θα ήταν να δίνεις και τιμή που το αγόρασες (μέσο όρο.. ενδεικτικά αν δε ξερεις) και να σου λέει πόσο % Πάνω είσαι...κάτι τέτοιο. 
-2)DONE!! Na deixnei metavoli timis % gia 24h i 7days....uparxei idi sto json apo coinmarketcap
-3)DONE!! Another feature would be to ask for important coins and color them
-4)DONE!! Another feature would be to ask a base coin and add a separator line above/below the base coin
+1)Coinmarketcap will CHANGE their API by the end of the year??...
 '''
 
 
 null = 0
 
-debug=1
+debug=0
 currency="EUR"
 coin=""
 price=0
